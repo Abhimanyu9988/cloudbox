@@ -1,0 +1,22 @@
+#profile
+{
+padding:50px;
+border:1px dashed grey;
+font-size:20px;
+background-color:#DCE6F7
+}
+#logout
+{
+float:right;
+padding:5px;
+border:dashed 1px gray
+}
+a
+{
+text-decoration:none;
+color:#6495ed
+}
+i
+{
+color:#6495ed
+}
