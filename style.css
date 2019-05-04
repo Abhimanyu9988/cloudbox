@@ -1,0 +1,53 @@
+#profile
+{
+padding:50px;
+border:1px dashed grey;
+font-size:20px;
+background-color:#DCE6F7
+}
+#logout
+{
+float:right;
+padding:5px;
+border:dashed 1px gray
+}
+a
+{
+text-decoration:none;
+color:#6495ed
+}
+i
+{
+color:#6495ed
+}
+	.docs {
+		box-sizing: border-box;
+		width: 100%;
+		height:150px;
+		width:150px;
+		text-align:center;
+		margin:30px;
+		display: inline-table;
+		vertical-align: middle;
+		border: 2px solid black;
+		border-radius: 20px ;
+	}
+	.docs:hover {
+		opacity: 0.7;
+		transform: scale(1.15);
+		transition: opacity 0.5s, transform 0.5s ease-in;
+	}
+
+	#docImg {
+		text-align:center;
+		margin:25px 0px 10px 0px;
+	}
+	#proPic{
+		width:30vw;
+	}
+	
+	#backgroundPic{
+		display: block;
+		max-width: 100%; 
+		height: 730px;"
+	}
