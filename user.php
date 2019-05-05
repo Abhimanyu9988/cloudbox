@@ -363,9 +363,8 @@ $bucketName = bucketName;
 	if(isset($_FILES['file'])){
   // For this, I would generate a unqiue random string for the key name. But you can do whatever.
   $total = count($_FILES['file']['name']);
-    echo $fName;
   for( $i=0 ; $i < $total ; $i++ ){ 
-  $keyName = $fName."";
+  $keyN = basename($_FILES["file"]['name'][$i]);
 	$keyName =  $fName.'/'.basename($_FILES["file"]['name'][$i]);
 	$pathInS3 = 'https://s3.us-east-1.amazonaws.com/' . $bucketName . '/' . $keyName;
 	// Add it to S3
@@ -391,7 +390,7 @@ $bucketName = bucketName;
 
   include 'conn.php';
   if(isset($_POST['submit'])&& !empty($url)){
-    mysqli_query($conn,"INSERT INTO user_data(url,u_id,fileName) values ('$url','$u_id','$keyName')");
+    mysqli_query($conn,"INSERT INTO user_data(url,u_id,fileName) values ('$url','$u_id','$keyN')");
   }
 }
 echo "<meta http-equiv='refresh' content='0'>";
