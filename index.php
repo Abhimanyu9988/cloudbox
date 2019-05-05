@@ -13,7 +13,7 @@ if(isset($_SESSION['id'])){
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Login V4</title>
+	<title>Login Page</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
@@ -82,7 +82,7 @@ if(isset($_SESSION['id'])){
 					<br>
 					<h2><center><span class="label-input100">or</span> </center></h2>
 					<br>
-<div class="container-login100-form-btn">
+					<div class="container-login100-form-btn">
 						<div class="wrap-login100-form-btn">
 							<div class="login100-form-bgbtn"></div>
 							<button id="submit" name="submit1" class="login100-form-btn" onclick="document.getElementById('id01').style.display='block'"> Sign Up </button>

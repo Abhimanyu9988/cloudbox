@@ -1,5 +1,5 @@
 <?php 
-$servername = 'aaesa5g0vw3iaz.c5jc6ljre57q.us-east-1.rds.amazonaws.com';
+$servername = 'aagakem9zh18dm.c5jc6ljre57q.us-east-1.rds.amazonaws.com';
 $user = 'mydatabase';
 $pass = 'dharam99';
 $dbname = 'company';
