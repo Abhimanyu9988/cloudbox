@@ -25,7 +25,7 @@ array_push($text,'You forgot your email');
 if($action['result'] != 'error'){
     //no errors, continue signup
        $password = md5($password);
-	   $add = mysqli_query($conn,"INSERT INTO `users`(firstName,username,password,pic,email) VALUES('$username','$username','$password',null,'$email')"	);
+	   $add = mysqli_query($conn,"INSERT INTO `users`(firstName,username,password,pic,email) VALUES('$username','$username','$password','images/user.png','$email')"	);
 if($add){
  echo '<script> window.location="index.php";</script>';
     //the user was added to the database    
