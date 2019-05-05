@@ -17,6 +17,7 @@
         $u_id = $row['id'];
 
     }
+ 
     if(isset($_POST['share'])){
       $mobile =$_POST['mobile'];
       $s = $_POST['files'];  
@@ -47,7 +48,7 @@
 <meta charset="UTF-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Personal Portfolio</title>
+<title>Home</title>
 
 <!-- Google fonts -->
 <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
@@ -79,7 +80,7 @@
     height:150px;
     width:150px;
     text-align:center;
-    margin:30px;
+    margin:12px;
     display: inline-table;
     vertical-align: middle;
     border: 2px solid white;
@@ -111,8 +112,12 @@
                   <!--<button style="position: absolute;right: 10px;top: 10px;" class="btn explore">Logout</button>-->
               <a href="logout.php" style="position: absolute;right: 10px;top: 10px; padding:20px;" class="btn btn-default">Logout</a>
               <a href="history.php" style="position: absolute;left: 10px;top: 10px; padding:20px;" class="btn btn-default">History</a>
+            
                 <?php
-                echo "<img src='".$pic."' class='img-circle profile'>
+                
+                echo "
+               
+              <a href='aa.php'><img src='".$pic."'data-toggle='modal' data-target='#myModal2' style='height:150px;width:150px;' class='img-circle profile'></a>
                 <h1 class='animated bounceInUp'>Welcome Back ".$fName." ".$lName."</h1>";
               ?> 
               <p class="animated bounceInLeft">What are we planning to do today </p>
@@ -143,20 +148,20 @@ background: linear-gradient(to right, #6f0000, #200122); /* W3C, IE 10+/ Edge, F
     if((mysqli_num_rows($result)>0)){
         while($row = mysqli_fetch_assoc($result)){          
             $ext = pathinfo($row['url']);    
-            $e =$ext['extension'] ;
-            if($e =='png' || $e =='jpg' || $e=='jpeg' || $e='JPG' || $e=='PNG'){
+            $ex =$ext['extension'] ;
+            if($ex =='png' || $ex =='jpg' || $ex=='jpeg' || $ex='JPG' || $ex=='PNG'){
               $src = $row['url'];
-            }else if($e =='docx' || $e=='doc' || $e =='DOCX' || $e=='DOC'){
+            }else if($ex =='docx' || $ex=='doc' || $ex =='DOCX' || $ex =='DOC'){
                 $src = 'images/icons/word.png';
-            }else if($e == 'pdf' || $e == 'PDF'){
+            }else if($ex == 'pdf' || $ex == 'PDF'){
                 $src = 'images/icons/pdf.png';
-            }else if($e == 'ppt' || $e == 'pptx' || $e == 'PPT' || $e == 'PPTX'){
+            }else if($ex == 'ppt' || $ex == 'pptx' || $ex == 'PPT' || $ex == 'PPTX'){
                 $src = 'images/icons/ppt.png';
-            }else if($e == 'xls' || $e == 'xlsx' || $e == 'XLS' || $e == 'XLSX'){
+            }else if($ex == 'xls' || $ex == 'xlsx' || $ex == 'XLS' || $ex == 'XLSX'){
                 $src = 'images/icons/xls.png';
-            }else if($e == 'zip' || $e == 'rar' || $e == 'ZIP' || $e == 'RAR'){
+            }else if($ex == 'zip' || $ex == 'rar' || $ex == 'ZIP' || $ex == 'RAR'){
                 $src = 'images/icons/zip.png';
-            }else if($e == 'mp4' || $e == 'MP4'){
+            }else if($ex == 'mp4' || $ex == 'MP4'){
                 $src = 'images/icons/video.png';
             }else{
                 $src = 'images/icons/file.png';
@@ -259,7 +264,30 @@ background: linear-gradient(to right, #6f0000, #200122); /* W3C, IE 10+/ Edge, F
     </div>
 	</div>";
     ?>
-
+<!-- Modal -->
+<div class="modal fade" id="myModal2" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm" style="color:black">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Upload Pic</h4>
+        </div>
+        <div class="modal-body">
+          <form action="" method="post" enctype="multipart/form-data">
+            <input type="file" require= class="form-control-file" name="profilePic" id="profilePic" accept=" image/*">
+            <button type="submit" name="profilePicBtn" style="margin-top:10px;padding:5px;" class="form-control-file btn btn-default">Upload</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" style="padding:5px;" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+	</div>
+    
 <!-- jquery -->
 <script src="assets/jquery.js"></script>
 <script type="text/javascript">
@@ -358,7 +386,36 @@ $bucketName = bucketName;
 		// We use a die, so if this fails. It stops here. Typically this is a REST call so this would
 		// return a json object.
 		die("Error: " . $e->getMessage());
-	}
+  }
+  
+  if(isset($_FILES['profilePic'])){
+    $keyName =  $fName.'/profilePic/'.basename($_FILES["profilePic"]['name']);
+    //$keyName =  basename($_FILES["profilePic"]['name']);
+    $pathInS3 = 'https://s3.us-east-1.amazonaws.com/' . $bucketName . '/' . $keyName;
+    // Add it to S3
+    try {
+        // Uploaded:
+        $file = $_FILES["profilePic"]['tmp_name'];
+        $result = $s3->putObject(
+            array(
+                'Bucket'=>$bucketName,
+                'Key' =>  $keyName,
+        'SourceFile' => $file,
+        'StorageClass' => 'REDUCED_REDUNDANCY',
+        'ACL'    => 'public-read' 
+            )
+        );
+        $uu = $result->get('ObjectURL');
+        //echo "<script type='text/javascript'>alert('$url');</script>"; 
+    } catch (Aws\S3\Exception\S3Exception $e) {    
+    die('Error:' . $e->getMessage());
+    echo "<script type='text/javascript'>alert('$e');</script>";
+    } catch (Exception $e) {
+    die('Error:' . $e->getMessage());
+    echo "<script type='text/javascript'>alert('$e');</script>";
+  }
+  echo "hhh"   ;
+}
 	
 	if(isset($_FILES['file'])){
   // For this, I would generate a unqiue random string for the key name. But you can do whatever.
@@ -384,9 +441,12 @@ $bucketName = bucketName;
         //echo "<script type='text/javascript'>alert('$url');</script>"; 
 	} catch (Aws\S3\Exception\S3Exception $e) {    
     die('Error:' . $e->getMessage());
+    echo "<script type='text/javascript'>alert('$e');</script>";
 	} catch (Exception $e) {
     die('Error:' . $e->getMessage());
-  }   
+    echo "<script type='text/javascript'>alert('$e');</script>";
+  }
+  
 
   include 'conn.php';
   if(isset($_POST['submit'])&& !empty($url)){
@@ -395,6 +455,11 @@ $bucketName = bucketName;
 }
 echo "<meta http-equiv='refresh' content='0'>";
 
+}
+include 'conn.php';
+if(isset($_POST['profilePicBtn'])&& !empty($uu)){
+  mysqli_query($conn,"UPDATE users set pic='$uu' where id='$u_id'");
+  echo "<meta http-equiv='refresh' content='0'>";
 }
 
 ?>
