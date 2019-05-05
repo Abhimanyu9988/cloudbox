@@ -97,7 +97,7 @@ if(isset($_SESSION['id'])){
       <p>Please fill in this form to create an account.</p>
       <hr>
 	  
-						<span class="label-input100">Name</span>
+						<span class="label-input100">User name</span>
 						<input class="input100" type="text" name="user" placeholder="Type your username" required>
     <!--  <label for="email"><b>Name</b></label>
       <input type="text" placeholder="Enter Username" name="user" required> -->

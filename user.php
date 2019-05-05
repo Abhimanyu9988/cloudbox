@@ -17,7 +17,6 @@
         $u_id = $row['id'];
 
     }
-//echo "<script type='text/javascript'>alert($u_id);</script>";   
     if(isset($_POST['share'])){
       $mobile =$_POST['mobile'];
       $s = $_POST['files'];  
@@ -83,8 +82,8 @@
     margin:30px;
     display: inline-table;
     vertical-align: middle;
-    border: 2px solid black;
-    border-radius: 20px ;
+    border: 2px solid white;
+    border-radius: 40px ;
 }
 .docs:hover {
     opacity: 0.7;
@@ -142,28 +141,28 @@ background: linear-gradient(to right, #6f0000, #200122); /* W3C, IE 10+/ Edge, F
 <?php
     $result = mysqli_query($conn,"SELECT * FROM user_data where u_id ='$id'");
     if((mysqli_num_rows($result)>0)){
-        while($row = mysqli_fetch_assoc($result)){
+        while($row = mysqli_fetch_assoc($result)){          
             $ext = pathinfo($row['url']);    
             $e =$ext['extension'] ;
-            if($e =='png' || $e =='jpg'){
-                $src ='images/icons/picc.png';
-            }else if($e =='docx' || $e=='doc'){
+            if($e =='png' || $e =='jpg' || $e=='jpeg' || $e='JPG' || $e=='PNG'){
+              $src = $row['url'];
+            }else if($e =='docx' || $e=='doc' || $e =='DOCX' || $e=='DOC'){
                 $src = 'images/icons/word.png';
-            }else if($e == 'pdf'){
+            }else if($e == 'pdf' || $e == 'PDF'){
                 $src = 'images/icons/pdf.png';
-            }else if($e == 'ppt' || $e == 'pptx'){
+            }else if($e == 'ppt' || $e == 'pptx' || $e == 'PPT' || $e == 'PPTX'){
                 $src = 'images/icons/ppt.png';
-            }else if($e == 'xls' || $e == 'xlsx'){
+            }else if($e == 'xls' || $e == 'xlsx' || $e == 'XLS' || $e == 'XLSX'){
                 $src = 'images/icons/xls.png';
-            }else if($e == 'zip' || $e == 'rar'){
+            }else if($e == 'zip' || $e == 'rar' || $e == 'ZIP' || $e == 'RAR'){
                 $src = 'images/icons/zip.png';
-            }else if($e == 'mp4'){
+            }else if($e == 'mp4' || $e == 'MP4'){
                 $src = 'images/icons/video.png';
             }else{
                 $src = 'images/icons/file.png';
             }
 
-            echo "<span class='docs' ><a href='".$row['url']."'><img id='docImg' src='$src' ><br>
+            echo "<span class='docs' ><a href='".$row['url']."'><img id='docImg' style='height:60px;width:60px;' src='$src' ><br>
                 ".$row['fileName']."</a></span>";
         }
     }else{
@@ -205,7 +204,7 @@ background: linear-gradient(to right, #6f0000, #200122); /* W3C, IE 10+/ Edge, F
         </div>
         <div class="modal-body">
            <form action="" method="post" enctype="multipart/form-data">
-              <input type="file" require="" class="form-control-file" name="file" id="file">
+              <input type="file" require="" class="form-control-file" name="file[]" id="file" accept=" image/*,.xlsx,.xls,.doc, .docx,.ppt, .pptx,.txt,.pdf" multiple>
               <button type="submit" name="submit" style="margin-top:10px;padding:5px;" class="form-control-file btn btn-default">Upload</button>
             </form>
         </div>
@@ -362,18 +361,23 @@ $bucketName = bucketName;
 	}
 	
 	if(isset($_FILES['file'])){
-	// For this, I would generate a unqiue random string for the key name. But you can do whatever.
-	$keyName =  basename($_FILES["file"]['name']);
+  // For this, I would generate a unqiue random string for the key name. But you can do whatever.
+  $total = count($_FILES['file']['name']);
+    echo $fName;
+  for( $i=0 ; $i < $total ; $i++ ){ 
+  $keyName = $fName."";
+	$keyName =  $fName.'/'.basename($_FILES["file"]['name'][$i]);
 	$pathInS3 = 'https://s3.us-east-1.amazonaws.com/' . $bucketName . '/' . $keyName;
 	// Add it to S3
 	try {
 		// Uploaded:
-		$file = $_FILES["file"]['tmp_name'];
+		$file = $_FILES["file"]['tmp_name'][$i];
 		$result = $s3->putObject(
 			array(
 				'Bucket'=>$bucketName,
 				'Key' =>  $keyName,
-				'SourceFile' => $file,
+        'SourceFile' => $file,
+        'StorageClass' => 'REDUCED_REDUNDANCY',
         'ACL'    => 'public-read' 
 			)
         );
@@ -383,13 +387,15 @@ $bucketName = bucketName;
     die('Error:' . $e->getMessage());
 	} catch (Exception $e) {
     die('Error:' . $e->getMessage());
-	}   
-	}
+  }   
 
   include 'conn.php';
   if(isset($_POST['submit'])&& !empty($url)){
     mysqli_query($conn,"INSERT INTO user_data(url,u_id,fileName) values ('$url','$u_id','$keyName')");
   }
+}
+echo "<meta http-equiv='refresh' content='0'>";
 
- 
+}
+
 ?>
