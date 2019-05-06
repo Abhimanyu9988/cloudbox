@@ -88,7 +88,7 @@
               <div class="caption-info">      
                   <!--<button style="position: absolute;right: 10px;top: 10px;" class="btn explore">Logout</button>-->
               <a href="logout.php" style="position: absolute;right: 10px;top: 10px; padding:20px;" class="btn btn-default">Logout</a>
-              <a href="user.php" style="position: absolute;left: 10px;top: 10px; padding:20px;" class="btn btn-default">Back</a>
+              <a href="home.php" style="position: absolute;left: 10px;top: 10px; padding:20px;" class="btn btn-default">Back</a>
               <h3 style='position:absolute;left:100px;margin:5px;' class='animated bounceInUp'>History</h3>
                  
     		  </div>
