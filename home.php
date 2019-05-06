@@ -1,12 +1,11 @@
 <?php
     session_start();
     include 'conn.php';
-    
+    include 'upload.php';
+
     if (!isset($_SESSION['id'])){
         echo "<script type='text/javascript'>alert('Login first');</script>"; 
         echo '<script> window.location="index.php";</script>';
-
-   
     }else{
         $id = $_SESSION['id'];
         $result = mysqli_query($conn,"SELECT * FROM users WHERE id ='$id'");
@@ -15,7 +14,6 @@
         $lName = $row['lastName'];
         $pic = $row['pic'];
         $u_id = $row['id'];
-
     }
  
     if(isset($_POST['share'])){
@@ -148,20 +146,20 @@ background: linear-gradient(to right, #6f0000, #200122); /* W3C, IE 10+/ Edge, F
     if((mysqli_num_rows($result)>0)){
         while($row = mysqli_fetch_assoc($result)){          
             $ext = pathinfo($row['url']);    
-            $ex =$ext['extension'] ;
-            if($ex =='png' || $ex =='jpg' || $ex=='jpeg' || $ex='JPG' || $ex=='PNG'){
-              $src = $row['url'];
-            }else if($ex =='docx' || $ex=='doc' || $ex =='DOCX' || $ex =='DOC'){
+            $e =$ext['extension'] ;
+            if($e =='png' || $e =='jpg'){
+                $src = $row['url'];
+            }else if($e =='docx' || $e=='doc'){
                 $src = 'images/icons/word.png';
-            }else if($ex == 'pdf' || $ex == 'PDF'){
+            }else if($e == 'pdf'){
                 $src = 'images/icons/pdf.png';
-            }else if($ex == 'ppt' || $ex == 'pptx' || $ex == 'PPT' || $ex == 'PPTX'){
+            }else if($e == 'ppt' || $e == 'pptx'){
                 $src = 'images/icons/ppt.png';
-            }else if($ex == 'xls' || $ex == 'xlsx' || $ex == 'XLS' || $ex == 'XLSX'){
+            }else if($e == 'xls' || $e == 'xlsx'){
                 $src = 'images/icons/xls.png';
-            }else if($ex == 'zip' || $ex == 'rar' || $ex == 'ZIP' || $ex == 'RAR'){
+            }else if($e == 'zip' || $e == 'rar'){
                 $src = 'images/icons/zip.png';
-            }else if($ex == 'mp4' || $ex == 'MP4'){
+            }else if($e == 'mp4'){
                 $src = 'images/icons/video.png';
             }else{
                 $src = 'images/icons/file.png';
@@ -359,107 +357,3 @@ $(document).ready(function() {
 
 </body>
 </html>
-
-<?php
-require 'vendor/autoload.php';
-include 'credentials.php';
- 
-use Aws\S3\S3Client;
-use Aws\S3\Exception\S3Exception;
-
-$bucketName = bucketName;
-	$IAM_KEY =  IAM_KEY;
-	$IAM_SECRET = IAM_SECRET;
- 
-    try {
-		$s3 = S3Client::factory(
-			array(
-				'credentials' => array(
-					'key' => $IAM_KEY,
-					'secret' => $IAM_SECRET
-				),
-				'version' => 'latest',
-				'region'  => 'us-east-1'
-			)
-		);
-	} catch (Exception $e) {
-		// We use a die, so if this fails. It stops here. Typically this is a REST call so this would
-		// return a json object.
-		die("Error: " . $e->getMessage());
-  }
-  
-  if(isset($_FILES['profilePic'])){
-    $keyName =  $fName.'/profilePic/'.basename($_FILES["profilePic"]['name']);
-    //$keyName =  basename($_FILES["profilePic"]['name']);
-    $pathInS3 = 'https://s3.us-east-1.amazonaws.com/' . $bucketName . '/' . $keyName;
-    // Add it to S3
-    try {
-        // Uploaded:
-        $file = $_FILES["profilePic"]['tmp_name'];
-        $result = $s3->putObject(
-            array(
-                'Bucket'=>$bucketName,
-                'Key' =>  $keyName,
-        'SourceFile' => $file,
-        'StorageClass' => 'REDUCED_REDUNDANCY',
-        'ACL'    => 'public-read' 
-            )
-        );
-        $uu = $result->get('ObjectURL');
-        //echo "<script type='text/javascript'>alert('$url');</script>"; 
-    } catch (Aws\S3\Exception\S3Exception $e) {    
-    die('Error:' . $e->getMessage());
-    echo "<script type='text/javascript'>alert('$e');</script>";
-    } catch (Exception $e) {
-    die('Error:' . $e->getMessage());
-    echo "<script type='text/javascript'>alert('$e');</script>";
-  }
-  echo "hhh"   ;
-}
-	
-	if(isset($_FILES['file'])){
-  // For this, I would generate a unqiue random string for the key name. But you can do whatever.
-  $total = count($_FILES['file']['name']);
-  for( $i=0 ; $i < $total ; $i++ ){ 
-  $keyN = basename($_FILES["file"]['name'][$i]);
-	$keyName =  $fName.'/'.basename($_FILES["file"]['name'][$i]);
-	$pathInS3 = 'https://s3.us-east-1.amazonaws.com/' . $bucketName . '/' . $keyName;
-	// Add it to S3
-	try {
-		// Uploaded:
-		$file = $_FILES["file"]['tmp_name'][$i];
-		$result = $s3->putObject(
-			array(
-				'Bucket'=>$bucketName,
-				'Key' =>  $keyName,
-        'SourceFile' => $file,
-        'StorageClass' => 'REDUCED_REDUNDANCY',
-        'ACL'    => 'public-read' 
-			)
-        );
-        $url = $result->get('ObjectURL');
-        //echo "<script type='text/javascript'>alert('$url');</script>"; 
-	} catch (Aws\S3\Exception\S3Exception $e) {    
-    die('Error:' . $e->getMessage());
-    echo "<script type='text/javascript'>alert('$e');</script>";
-	} catch (Exception $e) {
-    die('Error:' . $e->getMessage());
-    echo "<script type='text/javascript'>alert('$e');</script>";
-  }
-  
-
-  include 'conn.php';
-  if(isset($_POST['submit'])&& !empty($url)){
-    mysqli_query($conn,"INSERT INTO user_data(url,u_id,fileName) values ('$url','$u_id','$keyN')");
-  }
-}
-echo "<meta http-equiv='refresh' content='0'>";
-
-}
-include 'conn.php';
-if(isset($_POST['profilePicBtn'])&& !empty($uu)){
-  mysqli_query($conn,"UPDATE users set pic='$uu' where id='$u_id'");
-  echo "<meta http-equiv='refresh' content='0'>";
-}
-
-?>

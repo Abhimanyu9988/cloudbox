@@ -5,7 +5,7 @@ include('signup.php');
 include('login.php');
 include('conn.php');
 if(isset($_SESSION['id'])){
-	header("location: user.php");
+	header("location: home.php");
 	echo $_SESSION['id'];
 }
 
